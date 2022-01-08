@@ -25,5 +25,24 @@ fi
 
 rm $domain/$domain.txt
 }
+subdomain_finder()
+{
+echo -e "\n${bold}Finding subdomains using assetfinder is time consuming please wait...${end}\n"
+assetfinder --subs-only $domain > $domain/subdomain_subs.txt
+cat subdomain_subs.txt | httprobe > $domain/subdomain_alive.txt
+cat subdomain_alive.txt | sort -u > $domain/subdomain_sorted.txt
+count=$( wc -l < $domain/subdomain_sorted.txt )
+cat $domain/subdomain_sorted.txt
+echo "The total number of subdomains of $domain is $count" 
+echo -e "\n${bold}${green}Subdomains stored in $domain/subdomain_sorted.txt${end}"
+rm $domain/subdomain_subs.txt
+rm $domain/subdomain_alive.txt
+}
 
-emailgrab
+if [[ $domain != "" ]]; then
+	emailgrab
+	subdomain_finder
+ else
+ 	echo "\n${bold}please enter a domain name${end}"
+ fi
+ 
